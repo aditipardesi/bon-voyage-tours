@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BON VOYAGE TOURS</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+
+  .container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  #otpGroup {
+    display: none; /* Initially hide OTP input */
+  }
+
+  #verifyBtn {
+    display: none; /* Initially hide Verify OTP button */
+  }
+
+  #error-msg {
+    color: red;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2><strong>BON VOYAGE TOURS</strong></h2>
+  <form id="loginForm" onsubmit="sendOTP(event)">
+    <div class="form-group">
+      <label for="contactInfo">Email or Phone Number:</label>
+      <input type="text" id="contactInfo" name="contactInfo" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">Get OTP</button>
+    <div id="otpGroup" class="form-group">
+      <label for="otp">Enter OTP:</label>
+      <input type="number" id="otp" name="otp" required minlength="6" maxlength="6" disabled> <!-- Disabled initially -->
+    </div>
+    <button type="button" id="verifyBtn" onclick="verifyOTP()">Verify OTP</button> <!-- Use type="button" -->
+    <p id="error-msg"></p>
+  </form>
+</div>
+<script>
+  // Generate random OTP and store in sessionStorage
+  function generateOTP() {
+    const digits = '0123456789';
+    let otp = '';
+    for (let i = 0; i < 6; i++) {
+      otp += digits[Math.floor(Math.random() * 10)];
+    }
+    sessionStorage.setItem('generatedOTP', otp); // Store generated OTP
+    return otp;
+  }
+
+  // Simulate sending OTP to the provided contact info
+  function sendOTP(event) {
+    event.preventDefault();
+    const contactInfo = document.getElementById('contactInfo').value;
+    const generatedOTP = generateOTP();
+    console.log('Generated OTP:', generatedOTP); // Debug statement
+    alert(`OTP has been sent to ${contactInfo}. Please check your email or phone.`);
+    document.getElementById('otpGroup').style.display = 'block'; // Show OTP input field
+    document.getElementById('otp').disabled = false; // Enable OTP input field
+    document.getElementById('verifyBtn').style.display = 'block'; // Show Verify OTP button
+    document.getElementById('verifyBtn').disabled = false; // Enable Verify OTP button
+    document.getElementById('otp').focus(); // Set focus on OTP input field
+  }
+
+  // Verify OTP
+  function verifyOTP() {
+    const userEnteredOTP = document.getElementById('otp').value.trim(); // Trim whitespace
+    const generatedOTP = sessionStorage.getItem('generatedOTP').trim(); // Trim whitespace
+    if (userEnteredOTP === generatedOTP) {
+      alert('OTP verified successfully. You can now log in.');
+      document.getElementById('loginForm').submit(); // Proceed with login
+    } else {
+      alert('Invalid OTP. Please try again.');
+      document.getElementById('otp').value = ''; // Clear the OTP input field
+      document.getElementById('otp').focus(); // Set focus back to OTP input field
+    }
+  }
+</script>
+</body>
+</html>
